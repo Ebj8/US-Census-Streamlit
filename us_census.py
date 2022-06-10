@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+
+st.sidebar.write("Census Granularity")
 st.title('2017 US Census Data')
 
 @st.cache
