@@ -49,33 +49,43 @@ country_agg = country.groupby('country', as_index=False).agg({
 })
 
 country_agg = country_agg.assign(
-    pct_white = country['NumWhite']/country['TotalPop'],
-    pct_black = country['NumBlack']/country['TotalPop'],
-    pct_hispanic = country['NumHispanic']/country['TotalPop'],
-    pct_native = country['NumNative']/country['TotalPop'],
-    pct_asian = country['NumAsian']/country['TotalPop'],
-    pct_pacific = country['NumPacific']/country['TotalPop'],
-    pct_undeclared = country['NumUndeclared']/country['TotalPop']
+    White = country['NumWhite']/country['TotalPop'],
+    Black = country['NumBlack']/country['TotalPop'],
+    Hispanic = country['NumHispanic']/country['TotalPop'],
+    Native = country['NumNative']/country['TotalPop'],
+    Asian = country['NumAsian']/country['TotalPop'],
+    Pacific = country['NumPacific']/country['TotalPop'],
+    Undeclared = country['NumUndeclared']/country['TotalPop']
 )
 
 country_agg = country_agg.iloc[:,[0,9,10,11,12,13,14,15]]
-country_agg = pd.melt(country_agg,id_vars=["country"])
+country_agg = pd.melt(country_agg,id_vars=["country"], var_name='Race', value_name='Percent')
 
 pop_bar_chart = alt.Chart(country).mark_bar().encode(
     x = alt.X('State', sort = '-y'),
-    y = 'TotalPop'
-)
+    y = alt.Y('TotalPop', title = 'Total Population'),
+    tooltip = alt.Tooltip('TotalPop', format=',.0f')
+).properties(
+    height=400
+).interactive()
 
 st.altair_chart(pop_bar_chart, use_container_width=True)
 
 us_race_bar = alt.Chart(country_agg).mark_bar().encode(
-    x = alt.X('sum(value)'),
-    y = 'country',
-    color = 'variable'
-)
+    x = alt.X('sum(Percent)', axis=alt.Axis(format='.0%'), title=''),
+    y = alt.Y('country', title = ''),
+    color = 'Race',
+    order = alt.Order('Percent', sort='descending'),
+    tooltip=alt.Tooltip('Percent', format='.0%')
+).properties(
+    height=200
+).interactive()
 
-st.altair_chart(us_race_bar)
+us_race_text = alt.Chart(country_agg).mark_text()
+
+st.altair_chart(us_race_bar, use_container_width=True)
 
 if st.checkbox('Show Data'):
     st.subheader('Data')
     st.write(country_agg)
+
