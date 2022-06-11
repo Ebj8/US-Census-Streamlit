@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import altair as alt
+import geopandas as gpd
 
 st.title('2017 US Census Data Country Level')
 

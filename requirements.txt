@@ -3,3 +3,4 @@ streamlit==1.10.0
 altair==4.1.0
 plotly.express == 0.4.1
 matplotlib == 3.5.2
+geopandas == 0.10.2
